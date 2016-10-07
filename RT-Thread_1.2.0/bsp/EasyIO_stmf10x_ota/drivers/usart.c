@@ -236,6 +236,8 @@ static int stm32_putc(struct rt_serial_device *serial, char c)
     return 1;
 }
 
+
+
 static int stm32_getc(struct rt_serial_device *serial)
 {
     int ch;

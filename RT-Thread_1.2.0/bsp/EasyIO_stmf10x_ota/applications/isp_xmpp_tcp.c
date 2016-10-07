@@ -164,6 +164,67 @@ void routing_xmpp_tcp(void)
 	//
 }
 
+//static u32 CpuID[3];
+//static u32 Lock_Code;
+
+
+//void GetLockCode(void)
+//{
+//		CpuID[0]=*(vu32*)(0x1ffff7e8);
+//		CpuID[1]=*(vu32*)(0x1ffff7ec);
+//		CpuID[2]=*(vu32*)(0x1ffff7f0);
+//		Lock_Code=(CpuID[0]>>1)+(CpuID[1]>>2)+(CpuID[2]>>3);
+//}
+
+#include "SHA1/sha1.h"
+#include "BASE64/cbase64.h"
+int makepwd(char *pwd)
+{
+    SHA1Context sha;
+    int i;
+	
+    DEBUGL->debug("\nSTM32UID : %x %x %x \n",*(vu32*)(0x1ffff7e8),*(vu32*)(0x1ffff7ec),*(vu32*)(0x1ffff7f0));
+
+    SHA1Reset(&sha);
+    SHA1Input(&sha, (const unsigned char *) 0x1ffff7e8, 12);
+
+    if (!SHA1Result(&sha))
+    {
+        DEBUGL->debug("ERROR-- could not compute message digest\n");
+			return -1;
+    }
+    else
+    {
+				unsigned char * sha1_out_ptr;
+				unsigned char sha1_out_buf[20];
+				//char base64buf[64];
+        DEBUGL->debug("\t");
+        for(i = 0; i < 5 ; i++)
+        {
+						sha1_out_ptr = (unsigned char*)&sha.Message_Digest[i];
+            DEBUGL->debug("%02X ", sha1_out_ptr[3]);
+						DEBUGL->debug("%02X ", sha1_out_ptr[2]);
+						DEBUGL->debug("%02X ", sha1_out_ptr[1]);
+						DEBUGL->debug("%02X ", sha1_out_ptr[0]);
+					
+						sha1_out_buf[i*4 + 0] = sha1_out_ptr[3];
+						sha1_out_buf[i*4 + 1] = sha1_out_ptr[2];
+						sha1_out_buf[i*4 + 2] = sha1_out_ptr[1];
+						sha1_out_buf[i*4 + 3] = sha1_out_ptr[0];
+					
+        }
+        DEBUGL->debug("\n");
+				
+				//sha1_out_buf = (unsigned char *)&sha.Message_Digest[0];
+				encode_base64(sha1_out_buf,20,pwd);
+				DEBUGL->debug("RESULT : %s \r\n",pwd);
+				
+				
+		}
+
+    return 0;
+}
+
 void init_xmpp_tcp(void)
 {
 	char xmpp_uname[32];
@@ -174,7 +235,9 @@ void init_xmpp_tcp(void)
 		return ;
 	
 	
-	make_sha1_pwd(MODEM_IMEI,password);
+	
+	//make_sha1_pwd(MODEM_IMEI,password);
+	makepwd(password);
 	snprintf(xmpp_uname,sizeof(xmpp_uname),"imei%s",MODEM_IMEI);
 	
 	if((strlen(uconfig.openfire_username) > 0) && (strlen(uconfig.openfire_password) > 0))
@@ -187,8 +250,8 @@ void init_xmpp_tcp(void)
 		init_xmpp_cli(XMPP_USERNAME,/*"V0y7cuomRkzR3QEUtVFEC6xd0tM="*/XMPP_PASSWORD,XMPP_SERVER_HOSTNAME,XMPP_SERVER_PORT);
 		//init_xmpp_cli("test",/*"V0y7cuomRkzR3QEUtVFEC6xd0tM="*/"test",XMPP_SERVER_HOSTNAME,XMPP_SERVER_PORT);
 		
-		DEBUGL->debug("USERNAME : %s \r\n",XMPP_USERNAME);
-		DEBUGL->debug("PASSWORD : %s \r\n",XMPP_PASSWORD);
+		rt_kprintf("USERNAME : %s \r\n",XMPP_USERNAME);
+		rt_kprintf("PASSWORD : %s \r\n",XMPP_PASSWORD);
 		
 		{
 			char *regstr = rt_malloc(128);
