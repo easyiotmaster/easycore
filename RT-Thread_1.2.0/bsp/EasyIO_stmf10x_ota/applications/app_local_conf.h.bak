@@ -1,0 +1,47 @@
+#ifndef __LOCAL_CONF__
+#define __LOCAL_CONF__
+
+
+//用户自定义
+//#define MODEM_IMEI 								modem_imei
+#ifdef EASYIO_SIM800C_BRD
+#define MODEM_IMEI 								"123456789012304"
+#else
+#define MODEM_IMEI 								"123456789012303"
+#endif
+//#define NETWORK_APN_NAME					"cmnet"
+#define NETWORK_PPP_USERNAME			""
+#define NETWORK_PPP_PASSWORD			""
+
+
+//#define XMPP_SERVER_HOSTNAME			"liud-zb.jios.org"
+//#define XMPP_SERVER_PORT 					5222
+
+//111.164.186.123
+#define XMPP_SERVER_HOSTNAME			"115.28.44.147"
+#define XMPP_SERVER_PORT 					5222
+#define XMPP_USERNAME 						"tst_dwzn_001"
+#define XMPP_PASSWORD							"tst_dwzn_001"
+
+//#define XMPP_SERVER_HOSTNAME			"jareymobile.com.tw"
+//#define XMPP_SERVER_PORT 					20030
+//#define XMPP_USERNAME 						xmpp_uname
+//#define XMPP_PASSWORD							password
+
+//#define DISABLE_DEBUG_LEVEL_DEBUG
+
+#define PRESENCE_UPDATE_PREIOD 10
+
+//#define ENABLE_SERIAL_DEBUG_AT
+
+#define ENABLE_FC
+
+//#define DEVICE_MOTION							//设备永远移动状态
+//#define DISABLE_DIS_FILTER				//启动移动距离过滤
+//#define DISABLE_POWERSAVING_3G	//关闭3g休眠
+//#define DISABLE_UPDATE_PRESENE		//关闭presence
+//#define DISABLE_LED
+#define CONF_GPS_WORK_TYPE 0						//0 永远关闭 1，永远开启，2，休眠模式
+//#define GPS_DATA_TEST						//启用gps模拟数据
+
+#endif
